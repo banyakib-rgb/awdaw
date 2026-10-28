@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Реєстрація</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif}
+  body{background:#eef1f5;color:#12202f;min-height:100vh;display:flex;flex-direction:column}
+  header{background:#fff;border-bottom:1px solid #dde3ec;padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
+  .logo{font-weight:700;font-size:18px}
+  .logo span{color:#0e8a83}
+  .toplink{font-size:14px;color:#0e8a83;font-weight:600}
+  main{flex:1;display:flex;align-items:center;justify-content:center;padding:24px}
+  .card{background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:32px;width:100%;max-width:420px;box-shadow:0 14px 40px -20px rgba(15,28,46,.3)}
+  h1{font-size:24px;margin-bottom:6px}
+  .sub{color:#7b8aa0;font-size:14px;margin-bottom:20px}
+  label{display:block;font-size:13px;font-weight:600;margin:14px 0 6px;color:#41526a}
+  input{width:100%;padding:12px;border:1px solid #cdd6e2;border-radius:8px;font-size:15px}
+  input:focus{outline:none;border-color:#0e8a83;box-shadow:0 0 0 3px rgba(14,138,131,.15)}
+  .row{display:flex;gap:8px}
+  .row input{flex:1}
+  .btn{width:100%;background:#0e8a83;color:#fff;padding:13px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;margin-top:20px}
+  .btn:hover{background:#0a6d68}
+  .btn.ghost{background:#eef1f5;color:#12202f;width:auto;padding:12px 14px}
+  .msg{margin-top:14px;padding:12px;border-radius:8px;font-size:14px;display:none}
+  .msg.ok{display:block;background:#e2f4ea;color:#2f9e63}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Ключі<span>.</span></div>
+  <a class="toplink" href="panel.html">→ Панель</a>
+</header>
+
+<main>
+  <div class="card">
+    <h1>Реєстрація</h1>
+    <p class="sub">Заповни форму — дані з'являться в панелі.</p>
+    <form id="form">
+      <label>Ім'я</label>
+      <input id="name" placeholder="Іван Петренко" required>
+      <label>Email</label>
+      <input id="email" type="email" placeholder="ivan@mail.com" required>
+      <label>Пароль</label>
+      <div class="row">
+        <input id="pass" type="text" placeholder="мінімум 6 символів" required>
+        <button type="button" class="btn ghost" onclick="gen()">🎲</button>
+      </div>
+      <button class="btn" type="submit">Зареєструвати</button>
+      <div class="msg" id="msg"></div>
+    </form>
+  </div>
+</main>
+
+<script>
+function gen(){
+  const c='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%';
+  let p=''; for(let i=0;i<12;i++) p+=c[Math.floor(Math.random()*c.length)];
+  document.getElementById('pass').value=p;
+}
+document.getElementById('form').onsubmit=function(e){
+  e.preventDefault();
+  const name=document.getElementById('name').value.trim();
+  const email=document.getElementById('email').value.trim();
+  const pass=document.getElementById('pass').value;
+  if(pass.length<6){alert('Пароль — мінімум 6 символів');return;}
+  const users=JSON.parse(localStorage.getItem('users')||'[]');
+  users.push({name,email,pass,date:new Date().toLocaleString('uk-UA')});
+  localStorage.setItem('users',JSON.stringify(users));
+  const m=document.getElementById('msg');
+  m.className='msg ok'; m.textContent='✅ Готово! Відкрий панель, щоб побачити.';
+  this.reset();
+  setTimeout(()=>m.className='msg',4000);
+};
+</script>
+</body>
+</html>
